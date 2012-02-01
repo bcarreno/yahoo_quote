@@ -33,7 +33,7 @@ class TestYahooQuote < MiniTest::Unit::TestCase
     FakeWeb.register_uri(:get, YahooQuote.company_name_url, :response => text)
     assert_equal "Cysco Food Supplies", YahooQuote.company_name
 
-    # missing here emulating a different run
+    # emulating a different run here
 
     YahooQuote.init('CSCO')
     text = File.read('test/fakeweb/csco_bad.xml')
