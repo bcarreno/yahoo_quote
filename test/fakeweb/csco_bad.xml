@@ -1,0 +1,14 @@
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin: *
+Cache-Control: no-cache
+Content-Type: text/xml;charset=utf-8
+Vary: Accept-Encoding
+Date: Tue, 31 Jan 2012 23:45:51 GMT
+Server: YTS/1.20.7
+Age: 2
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+<?xml version="1.0" encoding="UTF-8"?>
+<query xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" yahoo:count="0" yahoo:created="2012-01-31T23:45:52Z" yahoo:lang="en-US"><results/></query><!-- total: 834 -->
+<!-- engine5.yql.ac4.yahoo.com -->
