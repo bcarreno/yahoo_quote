@@ -38,9 +38,9 @@ module YahooQuote
       data
     end
 
-    def company_name_url
-      "http://query.yahooapis.com/v1/public/yql?q=select%20CompanyName%20from%20yahoo.finance.stocks%20where%20symbol%3D%22#{@symbol}%22&format=xml&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys"
-    end
+#    def company_name_url
+#      "http://query.yahooapis.com/v1/public/yql?q=select%20CompanyName%20from%20yahoo.finance.stocks%20where%20symbol%3D%22#{@symbol}%22&format=xml&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys"
+#    end
 
     def quote_url
       tags = @fields.map{|x| field_mappings[x]}.join
