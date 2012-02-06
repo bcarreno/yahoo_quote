@@ -13,6 +13,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency "nokogiri"
   s.add_development_dependency "fakeweb"
+  s.add_development_dependency "ruby-debug19"
 
   s.rubyforge_project = "yahoo_quote"
 
