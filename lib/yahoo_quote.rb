@@ -25,6 +25,7 @@ module YahooQuote
         'EPS Estimate Next Year'          => 'e8',
         'Price/EPS Estimate Current Year' => 'r6',
         'Price/EPS Estimate Next Year'    => 'r7',
+        # TODO add more
       }
     end
 
@@ -64,10 +65,6 @@ module YahooQuote
       @data
     end
 
-    def parse_url(url)
-      URI.parse(url)
-    end
-  
     def filename_quote
       YahooQuote::Configuration.cache_dir + "/#{@symbol}.dump"
     end
