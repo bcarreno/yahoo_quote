@@ -1,9 +1,9 @@
 HTTP/1.1 200 OK
-Date: Mon, 06 Feb 2012 20:40:18 GMT
+Date: Mon, 06 Feb 2012 22:33:15 GMT
 P3P: policyref="http://p3p.yahoo.com/w3c/p3p.xml", CP="CAO DSP COR CUR ADM DEV TAI PSA PSD IVAi IVDi CONi TELo OTPi OUR DELi SAMi OTRi UNRi PUBi IND PHY ONL UNI PUR FIN COM NAV INT DEM CNT STA POL HEA PRE GOV"
 Cache-Control: private
 Connection: close
 Transfer-Encoding: chunked
 Content-Type: application/octet-stream
 
-"AAPL","Apple Inc.",463.43
+"AAPL","Apple Inc.",463.97,432.6B

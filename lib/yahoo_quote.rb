@@ -3,18 +3,7 @@ require "yahoo_quote/configuration"
 
 require 'open-uri'
 
-require 'nokogiri'
 require 'fakeweb'
-
-require 'ruby-debug'
-
-    # Possible issues:
-    # 1. Bad domain name ==> exception: 
-    # /Users/bcarreno/.rvm/rubies/ruby-1.9.2-p290/lib/ruby/1.9.1/net/http.rb:644:in
-    # `initialize': getaddrinfo: nodename nor servname provided, or not known (SocketError)
-    # 2. http://zen-secure.com/ ==> timeout
-    # /Users/bcarreno/.rvm/rubies/ruby-1.9.2-p290/lib/ruby/1.9.1/net/http.rb:644:in `initialize': Operation timed out - connect(2) (Errno::ETIMEDOUT)
-    # 3. text returned doesn't contain what you expect, error for example.
 
 module YahooQuote
   class Quote
@@ -40,9 +29,9 @@ module YahooQuote
     end
 
     def parse_csv(csv)
-      # yahoo csv is not CSV compliant (commas not escaped when part of field)
-      values = csv.chomp.split(/\",/).map{|x| x.gsub(/(^"|"$)/, '')}
-      # check result.size == fields.size
+      # TODO yahoo csv is not CSV compliant (commas not escaped when part of field)
+      values = csv.chomp.split(/,/).map{|x| x.gsub(/(^"|"$)/, '')}
+      # TODO check result.size == fields.size
       data = {}
       values.each_with_index {|value, i| data[@fields[i]] = value}
       data
@@ -64,14 +53,13 @@ module YahooQuote
       begin
         csv = io.read
       rescue
-        csv = file?(file_name) ? File.read(file_name) : ""
+        csv = ''
       end
       @data = parse_csv(csv)
       if valid?
-        File.open(filename_quote, 'w') {|f| f.write(csv) }
-      else
-        csv = file?(file_name) ? File.read(file_name) : ""
-        @data = parse_csv(csv)
+        File.open(filename_quote, 'wb') {|f| Marshal.dump(@data, f) }
+      elsif File.file?(filename_quote)
+        @data = File.open(filename_quote, 'rb') {|f| Marshal.load(f) }
       end
       @data
     end
@@ -80,20 +68,12 @@ module YahooQuote
       URI.parse(url)
     end
   
-    def read_url(io)
-      begin
-        text = io.read
-      rescue
-        return file?(file_name) ? File.read(file_name) : ""
-      end
-    end
-  
     def filename_quote
-      YahooQuote::Configuration.cache_dir + "/#{@symbol}.csv"
+      YahooQuote::Configuration.cache_dir + "/#{@symbol}.dump"
     end
 
     def valid?
-      @data.size > 0
+      @data.size > 1
     end
   end
 end
