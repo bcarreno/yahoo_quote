@@ -9,6 +9,6 @@ module YahooQuote
       @@cache_dir
     end
 
-    @@cache_dir = "/tmp"
+    @@cache_dir = nil
   end
 end

@@ -55,9 +55,9 @@ module YahooQuote
         csv = ''
       end
       @data = parse_csv(csv)
-      if valid?
+      if cache_response? && valid?
         File.open(filename_quote, 'wb') {|f| Marshal.dump(@data, f) }
-      elsif File.file?(filename_quote)
+      elsif cache_response? && File.file?(filename_quote)
         @data = File.open(filename_quote, 'rb') {|f| Marshal.load(f) }
       end
       @data
@@ -69,6 +69,10 @@ module YahooQuote
 
     def valid?
       @data.size > 1
+    end
+
+    def cache_response?
+      YahooQuote::Configuration.cache_dir
     end
   end
 end

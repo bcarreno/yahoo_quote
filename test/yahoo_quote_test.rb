@@ -25,6 +25,7 @@ class TestYahooQuote < MiniTest::Unit::TestCase
   end
 
   def test_get_quote_from_cache
+    YahooQuote::Configuration.cache_dir = "/tmp"
     quote = YahooQuote::Quote.new('AAPL', ['Symbol', 'Name', 'Last Trade (Price Only)'])
     FakeWeb.register_uri(:get, quote.quote_url, :response => File.read('test/fakeweb/aapl.csv'))
     assert_equal "Apple Inc.", quote.data["Name"]
