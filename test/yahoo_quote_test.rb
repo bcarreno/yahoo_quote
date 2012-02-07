@@ -2,6 +2,7 @@ $LOAD_PATH << File.join(File.dirname(__FILE__), '../lib')
 
 require 'yahoo_quote'
 require 'minitest/autorun'
+require 'fakeweb'
 
 class TestYahooQuote < MiniTest::Unit::TestCase
   def setup
@@ -10,9 +11,9 @@ class TestYahooQuote < MiniTest::Unit::TestCase
   end
 
   def test_live_quote
-    quote = YahooQuote::Quote.new('AMD', ['Symbol', 'Name'])
-    assert_equal "AMD",               quote.data["Symbol"]
-    assert_equal "Advanced Micro De", quote.data["Name"]
+    quote = YahooQuote::Quote.new('CSCO', ['Symbol', 'Name'])
+    assert_equal "CSCO",              quote.data["Symbol"]
+    assert_equal "Cisco Systems, In", quote.data["Name"]
   end
   
   def test_get_quote

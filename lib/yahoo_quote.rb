@@ -2,8 +2,7 @@ require "yahoo_quote/version"
 require "yahoo_quote/configuration"
 
 require 'open-uri'
-
-require 'fakeweb'
+require 'csv'
 
 module YahooQuote
   class Quote
@@ -30,8 +29,7 @@ module YahooQuote
     end
 
     def parse_csv(csv)
-      # TODO yahoo csv is not CSV compliant (commas not escaped when part of field)
-      values = csv.chomp.split(/,/).map{|x| x.gsub(/(^"|"$)/, '')}
+      values = CSV.parse_line(csv)
       # TODO check result.size == fields.size
       data = {}
       values.each_with_index {|value, i| data[@fields[i]] = value}
