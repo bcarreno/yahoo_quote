@@ -15,13 +15,21 @@ class TestYahooQuote < MiniTest::Unit::TestCase
     assert_equal "CSCO",              quote.data["Symbol"]
     assert_equal "Cisco Systems, In", quote.data["Name"]
   end
-  
+
   def test_get_quote
     quote = YahooQuote::Quote.new('AAPL', ['Symbol', 'Name', 'Last Trade (Price Only)', 'Market Capitalization'])
     FakeWeb.register_uri(:get, quote.quote_url, :response => File.read('test/fakeweb/aapl.csv'))
     assert_equal "Apple Inc.", quote.data["Name"]
     assert_equal 463.97,       quote.data["Last Trade (Price Only)"].to_f
     assert_equal '432.6B',     quote.data["Market Capitalization"]
+  end
+
+  def test_graph_url
+    quote = YahooQuote::Quote.new('AAPL', ['Symbol', 'Name', 'Last Trade (Price Only)', 'Market Capitalization'])
+    FakeWeb.register_uri(:get, quote.quote_url, :response => File.read('test/fakeweb/aapl.csv'))
+    # TODO this should not be necessary
+    assert_equal "Apple Inc.", quote.data["Name"]
+    assert_match %r(^http://chart.finance.yahoo.com/z\?s=AAPL), quote.graph_url
   end
 
   def test_get_quote_from_cache

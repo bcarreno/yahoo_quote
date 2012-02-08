@@ -132,6 +132,11 @@ module YahooQuote
       "http://download.finance.yahoo.com/d/quotes.csv?s=#{@symbol}&f=#{tags}"
     end
 
+    def graph_url
+      return nil unless valid?
+      "http://chart.finance.yahoo.com/z?s=#{@symbol}&t=1y&q=&l=&z=l&p=s&a=v&p=s&lang=en-US&region=US"
+    end
+
     def data
       return @data if @data && valid?
 
