@@ -4,6 +4,20 @@ require "yahoo_quote/configuration"
 require 'open-uri'
 require 'csv'
 
+class Hash
+  def self.csv_load( meta, headers, fields )
+    self[*headers.zip(fields).flatten.map { |e| eval(e) }]
+  end
+
+  def csv_headers
+    keys.map { |key| key.inspect }
+  end
+
+  def csv_dump( headers )
+    headers.map { |header| fetch(eval(header)).inspect }
+  end
+end
+
 module YahooQuote
   class Quote
     def initialize(symbol, fields)
@@ -116,8 +130,8 @@ module YahooQuote
     def quote_url
       tags = @fields.map{|x| field_mappings[x]}.join
       "http://download.finance.yahoo.com/d/quotes.csv?s=#{@symbol}&f=#{tags}"
-    end      
-  
+    end
+
     def data
       return @data if @data && valid?
 
@@ -129,9 +143,9 @@ module YahooQuote
       end
       @data = parse_csv(csv)
       if cache_response? && valid?
-        File.open(filename_quote, 'wb') {|f| Marshal.dump(@data, f) }
+        File.open(filename_quote, 'w') {|f| CSV.dump([@data], f) }
       elsif cache_response? && File.file?(filename_quote)
-        @data = File.open(filename_quote, 'rb') {|f| Marshal.load(f) }
+        @data = (File.open(filename_quote, 'r') {|f| CSV.load(f)}).first
       end
       @data
     end
