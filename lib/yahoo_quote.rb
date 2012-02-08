@@ -160,7 +160,7 @@ module YahooQuote
     end
 
     def valid?
-      @data && @data["Last Trade (Price Only)"] != 'N/A'
+      @data && @data["Market Capitalization"] != 'N/A'
     end
 
     def cache_response?
