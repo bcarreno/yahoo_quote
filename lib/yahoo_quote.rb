@@ -3,7 +3,6 @@ require "yahoo_quote/configuration"
 
 require 'open-uri'
 require 'csv'
-require 'ruby-debug'
 
 class Hash
   def self.csv_load( meta, headers, fields )
