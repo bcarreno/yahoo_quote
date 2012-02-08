@@ -3,6 +3,7 @@ require "yahoo_quote/configuration"
 
 require 'open-uri'
 require 'csv'
+require 'ruby-debug'
 
 class Hash
   def self.csv_load( meta, headers, fields )
@@ -118,9 +119,15 @@ module YahooQuote
     def parse_csv(csv)
       values = CSV.parse_line(csv)
       # TODO check result.size == fields.size
-      data = {}
-      values.each_with_index {|value, i| data[@fields[i]] = value}
-      data
+      response = {}
+      values.each_with_index {|value, i| response[@fields[i]] = value}
+      response
+    end
+
+    def validate(response)
+      # Yahoo returns company name even if ticker symbol is invalid, other
+      # fields are also populated.
+      response["Market Capitalization"] == 'N/A' ? {} : response
     end
 
 #    def company_name_url
@@ -138,7 +145,7 @@ module YahooQuote
     end
 
     def data
-      return @data if @data && valid?
+      return @data if @data
 
       io = URI.parse(quote_url)
       begin
@@ -146,7 +153,7 @@ module YahooQuote
       rescue
         csv = ''
       end
-      @data = parse_csv(csv)
+      @data = validate(parse_csv(csv))
       if cache_response? && valid?
         File.open(filename_quote, 'w') {|f| CSV.dump([@data], f) }
       elsif cache_response? && File.file?(filename_quote)
@@ -156,11 +163,11 @@ module YahooQuote
     end
 
     def filename_quote
-      YahooQuote::Configuration.cache_dir + "/#{@symbol}.dump"
+      YahooQuote::Configuration.cache_dir + "/#{@symbol}.csv"
     end
 
     def valid?
-      @data && @data["Market Capitalization"] != 'N/A'
+      @data && @data.size > 0
     end
 
     def cache_response?

@@ -4,6 +4,8 @@ require 'yahoo_quote'
 require 'minitest/autorun'
 require 'fakeweb'
 
+# test error:    YahooQuote::Configuration.cache_dir = "/etc/kk"
+#
 class TestYahooQuote < MiniTest::Unit::TestCase
   def setup
     # TODO make gem method to clear the cache
@@ -14,6 +16,13 @@ class TestYahooQuote < MiniTest::Unit::TestCase
     quote = YahooQuote::Quote.new('CSCO', ['Symbol', 'Name'])
     assert_equal "CSCO",              quote.data["Symbol"]
     assert_equal "Cisco Systems, In", quote.data["Name"]
+  end
+
+  def test_invalid_ticker_symbol
+    quote = YahooQuote::Quote.new('ECOMMERCE', ['Symbol', 'Name', 'Market Capitalization'])
+    assert_nil quote.data["Name"]
+    assert_equal false, quote.valid?
+    # TODO check no cached
   end
 
   def test_get_quote
