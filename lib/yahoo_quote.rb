@@ -23,9 +23,45 @@ module YahooQuote
     def initialize(symbol, fields)
       @symbol = symbol.gsub(".", '') # yahoo csv expects no periods
       @fields = fields
+      # used by validate method
+      @fields << "Market Capitalization" unless @fields.include? "Market Capitalization"
+      pull_data
     end
 
+    def valid?
+      return false unless @data
+      @data.size > 0
+    end
+
+    def data
+      @data.nil? ? {} : @data
+    end
+
+    def cache_response?
+      YahooQuote::Configuration.cache_dir
+    end
+
+    def filename_quote
+      YahooQuote::Configuration.cache_dir + "/#{@symbol}.csv"
+    end
+
+    def quote_url
+      tags = @fields.map{|x| field_mappings[x]}.join
+      "http://download.finance.yahoo.com/d/quotes.csv?s=#{@symbol}&f=#{tags}"
+    end
+
+    def graph_url
+      return nil unless valid?
+      "http://chart.finance.yahoo.com/z?s=#{@symbol}&t=1y&q=&l=&z=l&p=s&a=v&p=s&lang=en-US&region=US"
+    end
+
+#    Not working any longer
+#    def company_name_url
+#      "http://query.yahooapis.com/v1/public/yql?q=select%20CompanyName%20from%20yahoo.finance.stocks%20where%20symbol%3D%22#{@symbol}%22&format=xml&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys"
+#    end
+
     def field_mappings
+      # From http://cliffngan.net/a/13
       {
         "1 yr Target Price" => "t8",
         "200-day Moving Average" => "m4",
@@ -115,36 +151,11 @@ module YahooQuote
       }
     end
 
-    def parse_csv(csv)
-      values = CSV.parse_line(csv)
-      # TODO check result.size == fields.size
-      response = {}
-      values.each_with_index {|value, i| response[@fields[i]] = value}
-      response
-    end
+    private
 
-    def validate(response)
-      # Yahoo returns company name even if ticker symbol is invalid, other
-      # fields are also populated.
-      response["Market Capitalization"] == 'N/A' ? {} : response
-    end
-
-#    def company_name_url
-#      "http://query.yahooapis.com/v1/public/yql?q=select%20CompanyName%20from%20yahoo.finance.stocks%20where%20symbol%3D%22#{@symbol}%22&format=xml&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys"
-#    end
-
-    def quote_url
-      tags = @fields.map{|x| field_mappings[x]}.join
-      "http://download.finance.yahoo.com/d/quotes.csv?s=#{@symbol}&f=#{tags}"
-    end
-
-    def graph_url
-      return nil unless valid?
-      "http://chart.finance.yahoo.com/z?s=#{@symbol}&t=1y&q=&l=&z=l&p=s&a=v&p=s&lang=en-US&region=US"
-    end
-
-    def data
-      return @data if @data
+    def pull_data
+      # abort if symbol has a weird character
+      return if @symbol.empty? || @symbol =~ /\W/
 
       io = URI.parse(quote_url)
       begin
@@ -153,24 +164,27 @@ module YahooQuote
         csv = ''
       end
       @data = validate(parse_csv(csv))
-      if cache_response? && valid?
-        File.open(filename_quote, 'w') {|f| CSV.dump([@data], f) }
-      elsif cache_response? && File.file?(filename_quote)
-        @data = (File.open(filename_quote, 'r') {|f| CSV.load(f)}).first
+      if cache_response?
+        if valid?
+          File.open(filename_quote, 'w') {|f| CSV.dump([@data], f) }
+        elsif File.file?(filename_quote)
+          @data = (File.open(filename_quote, 'r') {|f| CSV.load(f)}).first
+        end
       end
-      @data
     end
 
-    def filename_quote
-      YahooQuote::Configuration.cache_dir + "/#{@symbol}.csv"
+    def parse_csv(csv)
+      values = CSV.parse_line(csv, :converters => :numeric)
+      # TODO check result.size == fields.size
+      response = {}
+      values.each_with_index {|value, i| response[@fields[i]] = value}
+      response
     end
 
-    def valid?
-      @data && @data.size > 0
-    end
-
-    def cache_response?
-      YahooQuote::Configuration.cache_dir
+    def validate(response)
+      # Yahoo csv returns values even if ticker symbol is invalid,
+      # use this condition to make sure the response is ok.
+      response["Market Capitalization"] == 'N/A' ? {} : response
     end
   end
 end

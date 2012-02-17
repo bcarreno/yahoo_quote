@@ -3,7 +3,7 @@ module YahooQuote
 
     def self.cache_dir=(path)
       dir = path.to_s
-      Dir.mkdir(dir) unless File.directory?(dir)
+      Dir.mkdir(dir) unless dir.empty? || File.directory?(dir)
       @@cache_dir = dir
     end
 
