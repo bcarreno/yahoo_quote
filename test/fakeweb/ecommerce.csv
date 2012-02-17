@@ -1,0 +1,9 @@
+HTTP/1.1 200 OK
+Date: Thu, 16 Feb 2012 20:51:23 GMT
+P3P: policyref="http://p3p.yahoo.com/w3c/p3p.xml", CP="CAO DSP COR CUR ADM DEV TAI PSA PSD IVAi IVDi CONi TELo OTPi OUR DELi SAMi OTRi UNRi PUBi IND PHY ONL UNI PUR FIN COM NAV INT DEM CNT STA POL HEA PRE GOV"
+Cache-Control: private
+Connection: close
+Transfer-Encoding: chunked
+Content-Type: application/octet-stream
+
+"ECOMMERCE","ECOMMERCE",N/A
