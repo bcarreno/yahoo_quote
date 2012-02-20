@@ -24,6 +24,8 @@ quote.valid?
 # => false
 ```
 
+![wqer](http://chart.finance.yahoo.com/z?s=AAPL&t=1y&q=&l=&z=l&p=s&a=v&p=s&lang=en-US&region=US)
+
 To get list of supported fields:
 
 ```ruby
