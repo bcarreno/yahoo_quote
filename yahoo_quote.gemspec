@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Braulio Carreno"]
   s.email       = ["bcarreno@yahoo.com"]
   s.homepage    = "https://github.com/bcarreno/yahoo_quote"
-  s.summary     = %q{Yahoo Finance stock quotes}
-  s.description = %q{Facilitates querying Yahoo Finance stock API}
+  s.summary     = %q{Query Yahoo Finance API}
+  s.description = %q{Easy interaction with Yahoo Finance API}
 
   s.add_development_dependency "fakeweb"
 
