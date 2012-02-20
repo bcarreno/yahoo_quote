@@ -19,16 +19,20 @@ quote.data['Last Trade (Price Only)']
 # => 502.12
 quote.data['P/E Ratio']
 # => 14.29
+quote = YahooQuote::Quote.new('ECOMMERCE', ['Name', 'Last Trade (Price Only)', 'P/E Ratio'])
+quote.valid?
+# => false
 ```
+
 To get list of supported fields:
 
 ```ruby
 puts quote.field_mappings.keys
 ````
 
-## Cache
+## Configuration
 
-  Use /tmp to keep a rudimentary cache:
+Use /tmp to keep a simple cache:
 
 ```ruby
 YahooQuote::Configuration.cache_dir = "/tmp"
