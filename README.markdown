@@ -8,14 +8,31 @@ Easy interaction with Yahoo Finance API
 
 ## Usage
 
-    quote = YahooQuote::Quote.new('CSCO', ['Symbol', 'Name'])
-    assert_equal "CSCO",              quote.data["Symbol"]
-    assert_equal "Cisco Systems, In", quote.data["Name"]
-
-
+```ruby
+require 'yahoo_quote'
+quote = YahooQuote::Quote.new('AAPL', ['Name', 'Last Trade (Price Only)', 'P/E Ratio'])
+quote.valid?
+# => true
+quote.data['Name']
+# => "Apple Inc."
+quote.data['Last Trade (Price Only)']
+# => 502.12
+quote.data['P/E Ratio']
+# => 14.29
+```
 To get list of supported fields:
 
-   yq.field_mappings.keys
+```ruby
+puts quote.field_mappings.keys
+````
+
+## Cache
+
+  Use /tmp to keep a rudimentary cache:
+
+```ruby
+YahooQuote::Configuration.cache_dir = "/tmp"
+```
 
 ## Copyright
 
