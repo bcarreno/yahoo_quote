@@ -1,5 +1,3 @@
-$LOAD_PATH << File.join(File.dirname(__FILE__), '../lib')
-
 require 'yahoo_quote'
 require 'minitest/autorun'
 require 'fakeweb'
@@ -12,8 +10,7 @@ class TestYahooQuote < MiniTest::Unit::TestCase
     FakeWeb.allow_net_connect = false
     FakeWeb.register_uri(:get, @url_regexp, :response => File.read("test/fakeweb/aapl_good.csv"))
 
-    # TODO make gem method to clear the cache
-    `rm -f /tmp/*csv`
+    @cache_dir = File.join('test', 'cache')
   end
 
   def test_empty_arguments
@@ -52,9 +49,9 @@ class TestYahooQuote < MiniTest::Unit::TestCase
   end
 
   def test_get_quote_from_cache
-    YahooQuote::Configuration.cache_dir = "test/cache"
+    YahooQuote::Configuration.cache_dir = @cache_dir
     quote = YahooQuote::Quote.new('AAPL', ['Name', 'Last Trade (Price Only)', 'P/E Ratio'])
-    assert File.file? "test/cache/AAPL.csv"
+    assert File.file? File.join(@cache_dir, 'AAPL.csv')
     assert_equal "Apple Inc.", quote.data["Name"]
     assert_equal 503.65,       quote.data["Last Trade (Price Only)"]
     bad_response = File.read('test/fakeweb/aapl_bad.csv')
@@ -63,6 +60,12 @@ class TestYahooQuote < MiniTest::Unit::TestCase
     cached_quote = YahooQuote::Quote.new('AAPL', ['Name', 'Last Trade (Price Only)', 'P/E Ratio'])
     assert_equal "Apple Inc.", cached_quote.data["Name"]
     assert_equal 503.65,       cached_quote.data["Last Trade (Price Only)"]
+    # We don't want to cache responses for other tests
+    YahooQuote::Configuration.cache_dir = nil
+    assert !quote.cache_response?
+    assert !cached_quote.cache_response?
+  end
+
   def test_clear_cache
     YahooQuote::Configuration.cache_dir = @cache_dir
     quote = YahooQuote::Quote.new('AAPL', ['Name'])

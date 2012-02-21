@@ -42,7 +42,9 @@ module YahooQuote
     end
 
     def filename_quote
-      YahooQuote::Configuration.cache_dir + "/#{@symbol}.csv"
+      File.join(YahooQuote::Configuration.cache_dir, "#{@symbol}.csv")
+    end
+
     def clear_cache
       Dir.glob(File.join(YahooQuote::Configuration.cache_dir, '*.csv')).each {|f|
         File.unlink f }
