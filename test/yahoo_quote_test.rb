@@ -63,6 +63,14 @@ class TestYahooQuote < MiniTest::Unit::TestCase
     cached_quote = YahooQuote::Quote.new('AAPL', ['Name', 'Last Trade (Price Only)', 'P/E Ratio'])
     assert_equal "Apple Inc.", cached_quote.data["Name"]
     assert_equal 503.65,       cached_quote.data["Last Trade (Price Only)"]
+  def test_clear_cache
+    YahooQuote::Configuration.cache_dir = @cache_dir
+    quote = YahooQuote::Quote.new('AAPL', ['Name'])
+    assert Dir.glob(File.join(@cache_dir, '*.csv')).size > 0, 'No files stored in cache'
+    quote.clear_cache
+    assert_equal 0, Dir.glob(File.join(@cache_dir, '*.csv')).size
+    # We don't want to cache responses for other tests
     YahooQuote::Configuration.cache_dir = nil
+    assert !quote.cache_response?
   end
 end
