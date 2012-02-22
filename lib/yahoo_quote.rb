@@ -46,8 +46,10 @@ module YahooQuote
     end
 
     def clear_cache
-      Dir.glob(File.join(YahooQuote::Configuration.cache_dir, '*.csv')).each {|f|
-        File.unlink f }
+      if cache_response?
+        Pathname.glob(YahooQuote::Configuration.cache_dir.join('*.csv')).each {|f|
+          f.unlink}
+      end
     end
 
     def quote_url

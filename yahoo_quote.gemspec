@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
   s.description = %q{Easy interaction with Yahoo Finance API}
 
   s.add_development_dependency "fakeweb"
+  s.add_development_dependency "ruby-debug19"
 
   s.rubyforge_project = "yahoo_quote"
 

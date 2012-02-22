@@ -2,12 +2,12 @@ module YahooQuote
   class Configuration
 
     def self.cache_dir=(path)
-      if !path
-        @@cache_dir = path
+      if !path || path.to_s.empty?
+        @@cache_dir = nil
       else
-        dir = path.to_s
-        Dir.mkdir(dir) unless dir.empty? || File.directory?(dir)
-        @@cache_dir = dir
+        path = Pathname.new(path) if path.is_a? String
+        path.mkdir unless path.directory?
+        @@cache_dir = path
       end
     end
 

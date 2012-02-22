@@ -32,7 +32,7 @@ puts quote.field_mappings.keys
 
 ## Configuration
 
-Use /tmp to keep a simple cache:
+Specify a directory to keep a simple file-based cache:
 
 ```ruby
 YahooQuote::Configuration.cache_dir = "/tmp"
