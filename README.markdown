@@ -37,7 +37,3 @@ Specify a directory to keep a simple file-based cache:
 ```ruby
 YahooQuote::Configuration.cache_dir = "/tmp"
 ```
-
-## Copyright
-
-Copyright (c) 2012 Braulio Carreno. See LICENSE for details.
