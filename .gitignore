@@ -4,4 +4,4 @@
 Gemfile.lock
 extras/
 pkg/*
-test/cache/
+test/foo/

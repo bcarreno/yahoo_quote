@@ -3,20 +3,19 @@ require 'minitest/autorun'
 require 'pathname'
 require 'fakeweb'
 
-# TODO test 2 things: make intermediate dirs for cache and permissions
-
 class TestYahooQuote < MiniTest::Unit::TestCase
   def setup
     @url_regexp = %r(http://download\.finance\.yahoo\.com/d/quotes\.csv\?)
     FakeWeb.allow_net_connect = false
     FakeWeb.register_uri(:get, @url_regexp, :response => File.read("test/fakeweb/aapl_good.csv"))
 
-    @cache_dir = Pathname.new('test/cache')
+    @base_cache_dir = Pathname.new('test/foo')
+    @cache_dir = @base_cache_dir.join('cache')
   end
 
   def remove_dir(dir_path)
-    return unless dir_path.exist?
-    dir_path.each_child {|p| p.unlink}
+    dir_path.children.select {|p| p.directory?}.each {|f| remove_dir(f)}
+    dir_path.children.select {|p| p.file?     }.each {|f| f.unlink}
     dir_path.unlink
   end
 
@@ -74,7 +73,7 @@ class TestYahooQuote < MiniTest::Unit::TestCase
   end
 
   def test_create_cache_dir
-    remove_dir @cache_dir
+    remove_dir @base_cache_dir if @base_cache_dir.exist?
     assert !@cache_dir.exist?
     YahooQuote::Configuration.cache_dir = @cache_dir
     assert @cache_dir.exist?

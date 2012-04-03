@@ -1,3 +1,5 @@
+require 'fileutils'
+
 module YahooQuote
   class Configuration
 
@@ -6,7 +8,7 @@ module YahooQuote
         @@cache_dir = nil
       else
         path = Pathname.new(path) if path.is_a? String
-        path.mkdir unless path.directory?
+        FileUtils.mkdir_p(path) unless path.directory?
         @@cache_dir = path
       end
     end
