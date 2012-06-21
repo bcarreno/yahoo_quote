@@ -13,6 +13,10 @@ class TestYahooQuote < MiniTest::Unit::TestCase
     @cache_dir = @base_cache_dir.join('cache')
   end
 
+  def teardown
+    YahooQuote::Configuration.cache_dir = nil
+  end
+
   def remove_dir(dir_path)
     dir_path.children.select {|p| p.directory?}.each {|f| remove_dir(f)}
     dir_path.children.select {|p| p.file?     }.each {|f| f.unlink}
@@ -66,10 +70,6 @@ class TestYahooQuote < MiniTest::Unit::TestCase
     cached_quote = YahooQuote::Quote.new('AAPL', ['Name', 'Last Trade (Price Only)', 'P/E Ratio'])
     assert_equal "Apple Inc.", cached_quote.data["Name"]
     assert_equal 503.65,       cached_quote.data["Last Trade (Price Only)"]
-    # We don't want to cache responses for other tests
-    YahooQuote::Configuration.cache_dir = nil
-    assert !quote.cache_response?
-    assert !cached_quote.cache_response?
   end
 
   def test_create_cache_dir
@@ -77,7 +77,6 @@ class TestYahooQuote < MiniTest::Unit::TestCase
     assert !@cache_dir.exist?
     YahooQuote::Configuration.cache_dir = @cache_dir
     assert @cache_dir.exist?
-    YahooQuote::Configuration.cache_dir = nil
   end
 
   def test_clear_cache_when_no_cache
@@ -97,7 +96,6 @@ class TestYahooQuote < MiniTest::Unit::TestCase
     assert Dir.glob(File.join(@cache_dir, '*.csv')).size > 0, 'No files stored in cache'
     quote.clear_cache
     assert_equal 0, Dir.glob(File.join(@cache_dir, '*.csv')).size
-    YahooQuote::Configuration.cache_dir = nil
   end
 
   def test_save_cache_dir_as_pathname
@@ -105,6 +103,5 @@ class TestYahooQuote < MiniTest::Unit::TestCase
     assert dir_string.is_a?(String)
     YahooQuote::Configuration.cache_dir = dir_string
     assert YahooQuote::Configuration.cache_dir.is_a?(Pathname)
-    YahooQuote::Configuration.cache_dir = nil
   end
 end
