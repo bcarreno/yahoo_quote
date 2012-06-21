@@ -37,3 +37,8 @@ Specify a directory to keep a simple file-based cache:
 ```ruby
 YahooQuote::Configuration.cache_dir = "/tmp"
 ```
+
+## Credits
+
+Thanks to [danchoi](https://github.com/danchoi) for providing
+the initial code and encouraging me to extend it and make the gem.
